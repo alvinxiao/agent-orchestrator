@@ -7,6 +7,7 @@ Build the custom Python autonomous coding-agent orchestrator described in `docs/
 Use the engineering specification and ticket backlog when present; otherwise use the relevant GitHub issue as the scoped acceptance contract. Stop and flag material contradictions instead of silently inventing requirements.
 
 ## Coding workflow
+- For implementation, debugging, and review, read `.agents/skills/pstack-budget/SKILL.md` and use its Lean workflow by default. It adapts selected pstack principles for subscription usage; it does not load the full plugin.
 - Work on one scoped ticket at a time. Start with ORCH-001.
 - Inspect existing files and avoid unrelated edits.
 - Write deterministic, offline-capable tests alongside implementation.

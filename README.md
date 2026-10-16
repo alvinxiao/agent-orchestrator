@@ -61,3 +61,11 @@ network/API requests occur, or local state is created by CLI commands.
 `config/example.toml` illustrates a future local state location; it is not loaded
 by the bootstrap CLI. Local state, environments, logs, and Python caches are ignored.
 The next implementation ticket is ORCH-002.
+
+## Agent workflow and subscription usage
+
+Agents use the local [pstack-budget skill](.agents/skills/pstack-budget/SKILL.md):
+one agent by default, focused context, bounded repair loops, and required verification.
+See [workflow options and limits](docs/pstack-workflow.md) for the Lean default and
+optional focused review. This is a pstack adaptation, not a Cursor plugin install
+or an enforced token quota. No paid API fallback or automatic merge is enabled.
