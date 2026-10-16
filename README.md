@@ -55,12 +55,13 @@ CI runs these checks on Python 3.12. Smoke tests cover package metadata, both CL
 entry points, argument errors, capability reporting, and strict contract validation.
 `orchestrator validate <path>` validates a versioned YAML task or complete task list
 and emits JSON (exit 0 for valid, 2 for invalid). See [task contracts](docs/task-contracts.md).
-No executor, provider integration, scheduler, database persistence, or live agent is implemented. No services start,
+No executor, provider integration, scheduler or live agent is implemented. No services start,
 network/API requests occur, or local state is created by CLI commands.
 
 `config/example.toml` illustrates a future local state location; it is not loaded
 by the bootstrap CLI. Local state, environments, logs, and Python caches are ignored.
-The next implementation ticket is ORCH-003 (SQLite persistence).
+SQLite persistence is available through the Python API; see [storage](docs/storage.md).
+The next implementation ticket is ORCH-004 (dependency scheduling).
 
 ## Agent workflow and subscription usage
 
