@@ -25,3 +25,39 @@ A Python-based, dependency-aware autonomous coding-agent orchestrator. Its first
 The comprehensive engineering specification and agent ticket backlog were prepared in ChatGPT and should be placed under `docs/engineering_specification.md` and `docs/agent_ticket_backlog.md`. Do not claim those documents are present until uploaded.
 
 See [AGENTS.md](AGENTS.md) for agent working rules.
+
+
+## Local development (Python 3.12+)
+
+```sh
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[dev]'
+python -m orchestrator --help
+orchestrator version
+orchestrator doctor
+```
+
+The package has no runtime dependencies. Installation downloads build/development
+packages; installed CLI commands and tests run offline without API credentials.
+`version` reports `0.1.0`. `doctor` reports Git and SQLite availability; both are
+optional at this stage, so missing capabilities do not make the command fail.
+`python -m orchestrator` and the installed `orchestrator` command share the same CLI.
+
+```sh
+pytest
+ruff check .
+mypy src
+python -m compileall -q src
+```
+
+CI runs these checks on Python 3.12. Smoke tests cover package metadata, both CLI
+entry points, argument errors, capability reporting, and unsupported validation.
+`orchestrator validate <path>` currently exits 2 with an unsupported message and
+reads no files; strict task validation is ORCH-002. No executor, provider integration,
+scheduler, database persistence, or live agent is implemented. No services start,
+network/API requests occur, or local state is created by CLI commands.
+
+`config/example.toml` illustrates a future local state location; it is not loaded
+by the bootstrap CLI. Local state, environments, logs, and Python caches are ignored.
+The next implementation ticket is ORCH-002.
