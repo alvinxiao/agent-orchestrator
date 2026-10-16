@@ -1,0 +1,4 @@
+# Illustrative local configuration; the bootstrap CLI does not load this file.
+# Configuration parsing and executor behavior belong to later tickets.
+[orchestrator]
+state_directory = ".orchestrator"
