@@ -38,7 +38,7 @@ orchestrator version
 orchestrator doctor
 ```
 
-The package has no runtime dependencies. Installation downloads build/development
+The package uses PyYAML for safe YAML parsing. Installation downloads build/development
 packages; installed CLI commands and tests run offline without API credentials.
 `version` reports `0.1.0`. `doctor` reports Git and SQLite availability; both are
 optional at this stage, so missing capabilities do not make the command fail.
@@ -52,15 +52,15 @@ python -m compileall -q src
 ```
 
 CI runs these checks on Python 3.12. Smoke tests cover package metadata, both CLI
-entry points, argument errors, capability reporting, and unsupported validation.
-`orchestrator validate <path>` currently exits 2 with an unsupported message and
-reads no files; strict task validation is ORCH-002. No executor, provider integration,
-scheduler, database persistence, or live agent is implemented. No services start,
+entry points, argument errors, capability reporting, and strict contract validation.
+`orchestrator validate <path>` validates a versioned YAML task or complete task list
+and emits JSON (exit 0 for valid, 2 for invalid). See [task contracts](docs/task-contracts.md).
+No executor, provider integration, scheduler, database persistence, or live agent is implemented. No services start,
 network/API requests occur, or local state is created by CLI commands.
 
 `config/example.toml` illustrates a future local state location; it is not loaded
 by the bootstrap CLI. Local state, environments, logs, and Python caches are ignored.
-The next implementation ticket is ORCH-002.
+The next implementation ticket is ORCH-003 (SQLite persistence).
 
 ## Agent workflow and subscription usage
 

@@ -1,6 +1,7 @@
 """Offline smoke tests against the installed package and both entry points."""
 
 import importlib.metadata
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -13,9 +14,11 @@ from orchestrator.cli import main
 
 
 def run_cli(*args: str, module: bool = True) -> subprocess.CompletedProcess[str]:
-    command = [sys.executable, "-m", "orchestrator"] if module else [
-        str(Path(sys.executable).with_name("orchestrator"))
-    ]
+    command = (
+        [sys.executable, "-m", "orchestrator"]
+        if module
+        else [str(Path(sys.executable).with_name("orchestrator"))]
+    )
     return subprocess.run(command + list(args), capture_output=True, text=True, timeout=10)
 
 
@@ -48,8 +51,9 @@ def test_doctor() -> None:
 
 
 def test_doctor_without_optional_capabilities(capsys: pytest.CaptureFixture[str]) -> None:
-    with patch("orchestrator.cli.shutil.which", return_value=None), patch(
-        "orchestrator.cli.importlib.import_module", side_effect=ImportError
+    with (
+        patch("orchestrator.cli.shutil.which", return_value=None),
+        patch("orchestrator.cli.importlib.import_module", side_effect=ImportError),
     ):
         assert main(["doctor"]) == 0
     output = capsys.readouterr().out
@@ -57,12 +61,12 @@ def test_doctor_without_optional_capabilities(capsys: pytest.CaptureFixture[str]
     assert "SQLite: unavailable (optional)" in output
 
 
-def test_validate_is_explicitly_unsupported(tmp_path: Path) -> None:
+def test_validate_missing_file(tmp_path: Path) -> None:
     path = tmp_path / "missing.yaml"
     result = run_cli("validate", str(path))
     assert result.returncode == 2
-    assert "unsupported until ORCH-002" in result.stderr
-    assert result.stdout == ""
+    assert json.loads(result.stdout)["errors"][0]["code"] == "read_error"
+    assert result.stderr == ""
     assert not path.exists()
 
 

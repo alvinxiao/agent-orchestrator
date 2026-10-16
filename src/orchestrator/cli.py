@@ -2,11 +2,13 @@
 
 import argparse
 import importlib
+import json
 import shutil
-import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from orchestrator import __version__
+from orchestrator.contracts import ContractError, load_contracts
 
 
 def doctor() -> int:
@@ -28,7 +30,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("version", help="Report the package version")
     commands.add_parser("doctor", help="Report optional local capabilities")
-    validate = commands.add_parser("validate", help="Task validation (not implemented yet)")
+    validate = commands.add_parser(
+        "validate", help="Validate a versioned task contract or complete task set"
+    )
     validate.add_argument("path", help="Task contract path")
     args = parser.parse_args(argv)
     if args.command == "version":
@@ -36,5 +40,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command == "doctor":
         return doctor()
-    print("Task validation is unsupported until ORCH-002; no file was read.", file=sys.stderr)
-    return 2
+    try:
+        tasks = load_contracts(Path(args.path))
+    except ContractError as error:
+        print(
+            json.dumps(
+                {
+                    "valid": False,
+                    "errors": [
+                        {
+                            "code": error.code,
+                            "path": error.path,
+                            "message": error.message,
+                        }
+                    ],
+                },
+                sort_keys=True,
+            )
+        )
+        return 2
+    print(json.dumps({"valid": True, "task_ids": [task.id for task in tasks]}, sort_keys=True))
+    return 0
