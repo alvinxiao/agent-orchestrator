@@ -9,10 +9,10 @@ description = "Dependency-aware autonomous coding-agent orchestrator"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
-dependencies = []
+dependencies = ["PyYAML>=6.0.2,<7"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10", "ruff>=0.14,<1", "mypy>=1.18,<3"]
+dev = ["pytest>=8,<10", "ruff>=0.14,<1", "mypy>=1.18,<3", "types-PyYAML>=6,<7"]
 
 [project.scripts]
 orchestrator = "orchestrator.cli:main"

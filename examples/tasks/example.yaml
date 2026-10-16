@@ -1,0 +1,27 @@
+schema_version: 1
+id: ORCH-002
+title: Validate an example task contract
+repository: agent-orchestrator
+depends_on: []
+scope:
+  allowed_paths:
+    - src/orchestrator/contracts/**
+    - tests/**
+requirements:
+  - Reject malformed contracts without executing their commands
+acceptance:
+  commands:
+    - pytest tests/unit/test_contracts.py
+  required_tests:
+    - test_valid_example
+execution:
+  executor: mock
+  max_attempts: 3
+  timeout_minutes: 30
+permissions:
+  network: disabled
+  production_access: false
+  secrets_access: false
+  may_merge: false
+  may_deploy: false
+risk_level: low
